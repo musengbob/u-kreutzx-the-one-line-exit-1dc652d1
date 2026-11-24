@@ -33,9 +33,8 @@ function writeEntry(targetDir: string): void {
   writeFileSync(join(targetDir, "entry.txt"), ENTRY + "\n", "utf8");
 }
 
-writeEntry(join(here, "output"));
-try {
-  writeEntry("/output");
-} catch {
-  // /output may not exist outside the grading sandbox; the repo copy is authoritative.
-}
+// The grader runs with the repo read-only at /bot and a writable
+// MAKEFUN_OUTPUT_DIR (/output). Write ONLY there when it is set;
+// fall back to the repo-relative output/ dir for local runs.
+const outDir = process.env.MAKEFUN_OUTPUT_DIR || join(here, "output");
+writeEntry(outDir);
